@@ -62,6 +62,11 @@ FuncDeploy() {
 
 }
 
+# 重新部署
+FuncRedeploy() {
+    echo "redeploying..."
+}
+
 # 子命令
 case ${command} in
     "build")
@@ -77,6 +82,7 @@ case ${command} in
     ;;
 
     "redeploy")
+        FuncRedeploy
     ;;
 
     *)
@@ -84,7 +90,7 @@ case ${command} in
         build: 构建Lambda函数
         deploy: 部署Lambda函数到aws
         invoke: 运行Lambda函数
-        redeploy: 重新部署
+        redeploy: 重新部署Lambda函数到aws
     "
     ;;
 esac
