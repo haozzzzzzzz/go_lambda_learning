@@ -36,6 +36,7 @@ FuncInvoke() {
         --region ${LambdaRegion} \
         --payload "`cat ./test_event.json`" \
         output.txt
+
     cat output.txt
 }
 
@@ -82,6 +83,7 @@ case ${command} in
     echo "
         build: 构建Lambda函数
         deploy: 部署Lambda函数到aws
+        invoke: 运行Lambda函数
         redeploy: 重新部署
     "
     ;;
