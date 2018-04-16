@@ -3,7 +3,7 @@
 command=$1
 
 # 编译指令
-export GOOS=linux
+export GOOS=darwin
 export GOARCH=amd64
 
 # deploy params
@@ -28,6 +28,16 @@ FuncBuild() {
     zip ${ProgramName}.zip ${ProgramName}
 }
 
+# 运行
+FuncInvoke() {
+    echo "invoking..."
+    aws lambda invoke \
+        --function-name ${ProgramName} \
+        --region ${LambdaRegion} \
+        --payload "`cat ./test_event.json`" \
+        output.txt
+    cat output.txt
+}
 
 # 发布
 FuncDeploy() {
@@ -59,6 +69,10 @@ case ${command} in
 
     "deploy")
         FuncDeploy
+    ;;
+
+    "invoke")
+        FuncInvoke
     ;;
 
     "redeploy")
