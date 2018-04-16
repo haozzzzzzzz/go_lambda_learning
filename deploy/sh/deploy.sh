@@ -9,8 +9,6 @@ export GOARCH=amd64
 # deploy params
 LambdaFuncName=${ProgramName}
 LambdaMemory=128
-LambdaRegion="us-east-1"
-LambdaAccountId="842913648961"
 
 # 构建
 FuncBuild() {
@@ -34,7 +32,6 @@ FuncBuild() {
 # 发布
 FuncDeploy() {
     echo "deploying..."
-    source /Users/hao/Documents/Executable/Python3/Env/AWS/bin/activate
     aws lambda create-function \
         --region ${LambdaRegion} \
         --function-name ${ProgramName} \
@@ -43,15 +40,15 @@ FuncDeploy() {
         --runtime go1.x \
         --zip-file "fileb://./${ProgramName}.zip" \
         --handler ${ProgramName}
-    DeployResult=$?
-    deactivate
 
+    DeployResult=$?
     if [ ${DeployResult} == 0 ]
     then
         echo "deploy successfully."
     else
         echo "deploy failed." >&2;
     fi
+
 }
 
 # 子命令
@@ -59,9 +56,19 @@ case ${command} in
     "build")
         FuncBuild
     ;;
+
     "deploy")
         FuncDeploy
     ;;
+
     "redeploy")
+    ;;
+
+    *)
+    echo "
+        build: 构建Lambda函数
+        deploy: 部署Lambda函数到aws
+        redeploy: 重新部署
+    "
     ;;
 esac
