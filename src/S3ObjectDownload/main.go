@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
@@ -25,11 +26,11 @@ func main() {
 
 	fmt.Print(bucket)
 
-	s3manager.NewDownloader(session.NewSession(&aws.Config{
+	ses, err := session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
-	}))
+	})
+	downloader := s3manager.NewDownloader(ses)
 
-	lambda.Start()
 }
 
 func exitError(msg string, args ...interface{}) {
