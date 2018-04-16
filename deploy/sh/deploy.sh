@@ -3,12 +3,11 @@
 command=$1
 
 # 编译指令
-export GOOS=darwin
+export GOOS=linux
 export GOARCH=amd64
 
 # deploy params
 LambdaFuncName=${ProgramName}
-LambdaMemory=128
 
 # 构建
 FuncBuild() {
@@ -34,7 +33,7 @@ FuncInvoke() {
     aws lambda invoke \
         --function-name ${ProgramName} \
         --region ${LambdaRegion} \
-        --payload "`cat ./test_event.json`" \
+        --payload "`cat ./event.json`" \
         output.txt
 
     cat output.txt
