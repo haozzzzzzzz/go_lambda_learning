@@ -62,6 +62,28 @@ FuncDeploy() {
 
 }
 
+
+# 允许S3调用Lambda
+FuncPermitS3() {
+    echo "adding s3 permission..."
+    bucket = $2
+    aws lambda add-permission \
+        --function-name ${ProgramName} \
+        --region ${LambdaRegion} \
+        --statement-id "`date +%s%m`" \
+        --action "lambda:InvokeFunction" \
+        --principa s3.amazonaws.com \
+        --source-arn arn:aws:s3:::${bucket} \
+        --source-account ${LambdaAccountId}
+}
+
+# 访问策略
+FuncPolicy() {
+    echo "getting policy..."
+    aws lambda get-policy \
+        --function-name ${ProgramName}
+}
+
 # 重新部署
 FuncRedeploy() {
     echo "redeploying..."
@@ -79,6 +101,14 @@ case ${command} in
 
     "invoke")
         FuncInvoke
+    ;;
+
+    "permits3")
+        FuncPermitS3
+    ;;
+
+    "policy")
+        FuncPolicy
     ;;
 
     "redeploy")
