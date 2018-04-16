@@ -14,7 +14,7 @@ func main() {
 	bucket := "xl-pic"
 	item := "HappyFace.jpg"
 
-	// 相对项目根目录s
+	// 相对项目根目录
 	file, err := os.Create(fmt.Sprintf("./src/S3ObjectDownload/%s", item))
 	if nil != err {
 		exitError("unable to open file %q, %v", err)
