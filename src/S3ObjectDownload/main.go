@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -8,7 +9,27 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/sirupsen/logrus"
 )
+
+type OffsetByteBuffer struct {
+	bytes.Buffer
+}
+
+func (m *OffsetByteBuffer) WriteAt(p []byte, off int64) (n int, err error) {
+	n, err = m.Write(p)
+	if nil != err {
+		logrus.Warnf("write bytes failed. %s", err)
+		return
+	}
+	return
+}
+
+func NewOffsetByteBuffer(buf []byte) *OffsetByteBuffer {
+	return &OffsetByteBuffer{
+		Buffer: bytes.Buffer{},
+	}
+}
 
 func main() {
 	bucket := "xl-pic"
@@ -27,13 +48,19 @@ func main() {
 	})
 	downloader := s3manager.NewDownloader(ses)
 
-	numBytes, err := downloader.Download(file, &s3.GetObjectInput{
+	byteBuffer := NewOffsetByteBuffer(nil)
+	numBytes, err := downloader.Download(byteBuffer, &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(item),
 	})
-
 	if nil != err {
 		exitError("Unable to download item %q, %v", item, err)
+		return
+	}
+
+	_, err = byteBuffer.WriteTo(file)
+	if nil != err {
+		exitError("Write data to file failed. %s", err)
 		return
 	}
 
