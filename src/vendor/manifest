@@ -153,6 +153,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/nfnt/resize",
+			"repository": "https://github.com/nfnt/resize",
+			"vcs": "git",
+			"revision": "83c6a9932646f83e3267f353373d47347b6036b2",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/pelletier/go-toml",
 			"repository": "https://github.com/pelletier/go-toml",
 			"vcs": "git",
