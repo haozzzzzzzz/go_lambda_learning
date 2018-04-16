@@ -54,6 +54,7 @@ FuncDeploy() {
     fi
 }
 
+# 子命令
 case ${command} in
     "build")
         FuncBuild
