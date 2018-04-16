@@ -14,7 +14,8 @@ func main() {
 	bucket := "xl-pic"
 	item := "HappyFace.jpg"
 
-	file, err := os.Create(fmt.Sprintf("/Users/hao/Documents/Projects/Github/go_lambda_learning/src/S3PicResizeHandler/%s", item))
+	// 相对项目根目录s
+	file, err := os.Create(fmt.Sprintf("./src/S3ObjectDownload/%s", item))
 	if nil != err {
 		exitError("unable to open file %q, %v", err)
 		return
