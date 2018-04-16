@@ -5,4 +5,4 @@ LambdaRegion="us-east-1" # 可用去
 LambdaAccountId="842913648961" # 账号
 LambdaMemory=128 # 占用内容
 
-source ../../deploy/sh/deploy.sh
+source ./deploy.sh
