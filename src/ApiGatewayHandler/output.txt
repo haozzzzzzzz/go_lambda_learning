@@ -1,1 +1,1 @@
-{"statusCode":200,"headers":null,"body":"{\"code\":0,\"message\":\"请求成功\",\"data\":\"\",\"Ask\":{\"operation\":\"create\",\"tableName\":\"LambdaTable\",\"payload\":{\"Item\":{\"Id\":\"1\",\"Name\":\"Hao\"}}}}"}
+{"statusCode":200,"headers":null,"body":"{\"code\":0,\"message\":\"请求成功\",\"data\":{\"Id\":\"2\",\"name\":\"luo\"},\"Ask\":{\"operation\":\"read\",\"tableName\":\"LambdaTable\",\"payload\":{\"Id\":\"2\",\"name\":\"luo\"}}}"}

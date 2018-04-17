@@ -1,10 +1,8 @@
 {
-  "operation": "create",
+  "operation": "read",
   "tableName": "LambdaTable",
   "payload": {
-    "Item": {
-      "Id":"1",
-      "name": "Hao"
-    }
+    "Id":"2",
+    "name": "luo"
   }
 }
