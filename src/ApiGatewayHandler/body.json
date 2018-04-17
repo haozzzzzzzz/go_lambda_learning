@@ -1,0 +1,10 @@
+{
+  "operation": "create",
+  "tableName": "LambdaTable",
+  "payload": {
+    "Item": {
+      "Id":"1",
+      "name": "Hao"
+    }
+  }
+}
