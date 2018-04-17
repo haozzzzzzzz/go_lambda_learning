@@ -26,29 +26,29 @@ func main() {
 	}
 
 	svc := dynamodb.New(sess)
-	person := &Person{
-		Id:      "1",
-		Name:    "hao",
-		Address: "ShenZhen",
-	}
 
-	av, err := dynamodbattribute.MarshalMap(person)
-	if nil != err {
-		log.Fatal(err)
-		return
-	}
-
-	input := &dynamodb.PutItemInput{
-		Item:      av,
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String("Lambda"),
-	}
-
-	_, err = svc.PutItem(input)
+		Key: map[string]*dynamodb.AttributeValue{
+			"Id": {
+				S: aws.String("1"),
+			},
+			"name": {
+				S: aws.String("hao"),
+			},
+		},
+	})
 	if nil != err {
 		log.Fatal(err)
 		return
 	}
 
-	fmt.Println("Successfully put item")
+	newPerson := Person{}
+	err = dynamodbattribute.UnmarshalMap(result.Item, &newPerson)
+	if nil != err {
+		log.Fatal(err)
+		return
+	}
 
+	fmt.Println(newPerson)
 }
