@@ -66,7 +66,13 @@ FuncDeploy() {
 # 允许S3调用Lambda
 FuncPermitS3() {
     echo "adding s3 permission..."
-    bucket = $2
+    bucket=$1
+    if [ -z ${bucket} ]
+    then
+        echo "no bucket name"
+        return
+    fi
+
     aws lambda add-permission \
         --function-name ${ProgramName} \
         --region ${LambdaRegion} \
@@ -104,7 +110,7 @@ case ${command} in
     ;;
 
     "permits3")
-        FuncPermitS3
+        FuncPermitS3 $2
     ;;
 
     "policy")
@@ -120,6 +126,8 @@ case ${command} in
         build: 构建Lambda函数
         deploy: 部署Lambda函数到aws
         invoke: 运行Lambda函数
+        permits3 bucket-name: 添加访问允许
+        policy: 访问策略
         redeploy: 重新部署Lambda函数到aws
     "
     ;;
