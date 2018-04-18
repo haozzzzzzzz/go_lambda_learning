@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -36,38 +35,15 @@ type Ack struct {
 	Ask     *Ask
 }
 
-func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
-	var (
-		ask = new(Ask)
-		ack = new(Ack)
-	)
+func Handler(ctx context.Context, ask *Ask) (ack *Ack, err error) {
+	ack = new(Ack)
 
 	defer func() {
 		ack.Ask = ask
-
-		bytesAck, errMarshal := json.Marshal(ack)
-		if errMarshal != nil {
-			err = errMarshal
-			logrus.Warnf("marshal ack failed. %s", err)
-		}
-
-		response.Body = string(bytesAck)
-		if err != nil {
-			response.StatusCode = 500
-		} else {
-			response.StatusCode = 200
-		}
-
 	}()
 
 	ack.Code = 0
 	ack.Message = "请求成功"
-
-	err = json.Unmarshal([]byte(request.Body), ask)
-	if nil != err {
-		logrus.Warnf("unmarshal request body failed. %s", err)
-		return
-	}
 
 	switch ask.Operation {
 	case "create":
@@ -96,6 +72,21 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (respon
 	}
 
 	return
+}
+
+func Handler2(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	fmt.Printf("Processing request data for request %s. \n", request.RequestContext.RequestID)
+	fmt.Printf("Body size = %d. \n", len(request.Body))
+
+	fmt.Println("Headers:")
+	for key, value := range request.Headers {
+		fmt.Printf("		%s:%s\n", key, value)
+	}
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       request.Body,
+	}, nil
 }
 
 type Person struct {
@@ -181,5 +172,6 @@ func DynamoDBGetItem(id string, name string) (person *Person, err error) {
 }
 
 func main() {
-	lambda.Start(Handler)
+	//lambda.Start(Handler)
+	lambda.Start(Handler2)
 }

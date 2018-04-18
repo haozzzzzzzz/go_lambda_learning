@@ -2,6 +2,8 @@
 
 command=$1
 
+source ./params.sh
+
 # 编译指令
 export GOOS=linux
 export GOARCH=amd64
@@ -29,6 +31,12 @@ FuncBuild() {
 
 # 运行
 FuncInvoke() {
+    if [ -z $1 ]
+    then
+        echo "not body json specified."
+        return
+    fi
+
     echo "invoking..."
     requestBody="`cat $1`"
     echo ${requestBody}
@@ -90,9 +98,31 @@ FuncPermitS3() {
         --region ${LambdaRegion} \
         --statement-id "`date +%s%m`" \
         --action "lambda:InvokeFunction" \
-        --principa s3.amazonaws.com \
+        --principal s3.amazonaws.com \
         --source-arn arn:aws:s3:::${bucket} \
         --source-account ${LambdaAccountId}
+}
+
+# 允许ApiGateway调用Lambda测试
+FuncPermitApiGatewayTest() {
+    echo "add api gateway permission..."
+    aws lambda add-permission \
+        --function-name ${ProgramName} \
+        --statement-id apigateway-test \
+        --action lambda:InvokeFunction \
+        --principal apigateway.amazonaws.com \
+        --source-arn "arn:aws:execute-api:${LambdaRegion}:${LambdaAccountId}:${1}/*/POST/DynamoDBManager"
+}
+
+# 允许ApiGateway调用Lambda 正式
+FuncPermitApiGatewayProd() {
+    echo "add api gateway permission..."
+    aws lambda add-permission \
+        --function-name ${ProgramName} \
+        --statement-id apigateway-prod \
+        --action lambda:InvokeFunction \
+        --principal apigateway.amazonaws.com \
+        --source-arn "arn:aws:execute-api:${LambdaRegion}:${LambdaAccountId}:${1}/prod/POST/DynamoDBManager"
 }
 
 # 访问策略
@@ -100,11 +130,6 @@ FuncPolicy() {
     echo "getting policy..."
     aws lambda get-policy \
         --function-name ${ProgramName}
-}
-
-# apigateway
-FuncApiGateway() {
-    echo "creating api gateway..."
 }
 
 # 子命令
@@ -140,7 +165,12 @@ case ${command} in
         FuncDeploy
     ;;
 
-    "api")
+    "permit-apigateway-test")
+        FuncPermitApiGatewayTest $2
+    ;;
+
+    "permit-apigateway-prod")
+        FuncPermitApiGatewayProd $2
     ;;
 
     *)
@@ -152,6 +182,8 @@ case ${command} in
         permits3 bucket-name: 添加访问允许
         policy: 访问策略
         redeploy: 重新部署Lambda函数到aws
+        permit-apigateway-test api-id: 授权ApiGateway调用
+        permit-apigateway-prod api-id: 授权ApiGateway调用
     "
     ;;
 esac
