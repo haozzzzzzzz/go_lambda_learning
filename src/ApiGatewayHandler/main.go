@@ -37,7 +37,13 @@ type Ack struct {
 	Ask     *Ask
 }
 
-func Handler(ctx context.Context, request *events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
+func Handler(
+	ctx context.Context,
+	request *events.APIGatewayProxyRequest,
+) (
+	response events.APIGatewayProxyResponse,
+	err error,
+) {
 	var (
 		ask = new(Ask)
 		ack = new(Ack)
