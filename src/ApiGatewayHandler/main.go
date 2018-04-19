@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -10,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -35,12 +37,40 @@ type Ack struct {
 	Ask     *Ask
 }
 
-func Handler(ctx context.Context, ask *Ask) (ack *Ack, err error) {
-	ack = new(Ack)
+func Handler(ctx context.Context, request *events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
+	var (
+		ask = new(Ask)
+		ack = new(Ack)
+	)
 
 	defer func() {
 		ack.Ask = ask
+
+		if err != nil {
+			ack.Message = fmt.Sprintf("execute error. %s", err)
+		}
+
+		bytesAck, errMarshal := json.Marshal(ack)
+		if nil != errMarshal {
+			err = errMarshal
+			logrus.Warnf("marshal ack failed. %s", err)
+		}
+
+		response.StatusCode = 200
+		response.Body = string(bytesAck)
+
 	}()
+
+	if request.Body == "" {
+		err = errors.New("empty body")
+		return
+	}
+
+	err = json.Unmarshal([]byte(request.Body), ask)
+	if nil != err {
+		logrus.Warnf("unmarshal request body failed. %s", err)
+		return
+	}
 
 	ack.Code = 0
 	ack.Message = "请求成功"
@@ -172,6 +202,6 @@ func DynamoDBGetItem(id string, name string) (person *Person, err error) {
 }
 
 func main() {
-	//lambda.Start(Handler)
-	lambda.Start(Handler2)
+	lambda.Start(Handler)
+	//lambda.Start(Handler2)
 }

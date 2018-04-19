@@ -35,7 +35,7 @@ FuncPutIntegration() {
         --rest-api-id $1 \
         --resource-id $2 \
         --http-method POST \
-        --type AWS \
+        --type AWS_PROXY \
         --integration-http-method POST \
         --uri "arn:aws:apigateway:${LambdaRegion}:lambda:path/2015-03-31/functions/arn:aws:lambda:${LambdaRegion}:${LambdaAccountId}:function:${ProgramName}/invocations"
 }
