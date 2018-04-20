@@ -7,6 +7,6 @@ import (
 )
 
 func BindRouters(engine *gin.Engine) (err error) {
-	engine.Handle("GET", "/metric", metric.Info.HandlerFunc)
+	engine.Handle("GET", "/metric", metric.MetricHandlerFunc.HandlerFunc)
 	return
 }

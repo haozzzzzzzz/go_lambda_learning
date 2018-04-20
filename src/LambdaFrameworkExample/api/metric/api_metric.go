@@ -7,10 +7,10 @@ import (
 	"github.com/haozzzzzzzz/go-rapid-development/web/ginbuilder"
 )
 
-var Info ginbuilder.HandleFunc = ginbuilder.HandleFunc{
+var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 	HttpMethod:   "GET",
 	RelativePath: "/metric",
 	HandlerFunc: func(ginContext *gin.Context) {
-		fmt.Println("/Users/hao/Documents/Projects/Github/go_lambda_learning/src/LambdaFrameworkExample/api/metric/api_info.go")
+		fmt.Println("/Users/hao/Documents/Projects/Github/go_lambda_learning/src/LambdaFrameworkExample/api/metric/api_metric.go")
 	},
 }
