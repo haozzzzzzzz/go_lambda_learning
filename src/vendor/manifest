@@ -558,6 +558,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/serenize/snaker.git",
+			"repository": "https://github.com/serenize/snaker.git",
+			"vcs": "git",
+			"revision": "a683aaf2d516deecd70cad0c72e3ca773ecfcef0",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/shiena/ansicolor",
 			"repository": "https://github.com/shiena/ansicolor",
 			"vcs": "git",
