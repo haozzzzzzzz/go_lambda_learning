@@ -1,0 +1,12 @@
+- http_method: GET
+  relative_path: /info/hello
+  api_handler_func: info.HelloFunc
+  source_file: api/info/api_system.go
+- http_method: GET
+  relative_path: /metric/hello
+  api_handler_func: metric.HelloFunc
+  source_file: api/metric/api_helloworld.go
+- http_method: POST
+  relative_path: /metric/hello_world
+  api_handler_func: metric.HelloWorldFunc
+  source_file: api/metric/api_helloworld_2.go

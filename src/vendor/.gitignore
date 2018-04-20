@@ -2,3 +2,6 @@ github.com
 golang.org
 google.golang.org
 gopkg.in
+cloud.google.com
+go.opencensus.io
+go4.org
