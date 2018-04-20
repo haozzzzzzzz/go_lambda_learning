@@ -7,10 +7,6 @@ import (
 	"github.com/haozzzzzzzz/go-rapid-development/web/ginbuilder"
 )
 
-func init() {
-	fmt.Println("metric init")
-}
-
 var HelloFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 	HttpMethod:   "GET",
 	RelativePath: "/metric/hello",
