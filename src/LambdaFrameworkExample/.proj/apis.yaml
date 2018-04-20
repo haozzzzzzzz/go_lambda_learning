@@ -1,0 +1,5 @@
+- http_method: GET
+  relative_path: /metric
+  api_handler_func: Info
+  api_handler_package_func: metric
+  source_file: /Users/hao/Documents/Projects/Github/go_lambda_learning/src/LambdaFrameworkExample/api/metric/api_info.go
