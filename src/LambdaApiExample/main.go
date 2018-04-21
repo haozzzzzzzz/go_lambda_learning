@@ -1,12 +1,12 @@
 package main
 
 import (
-	"ExampleLambdaApi/handler"
+	"LambdaApiExample/handler"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-var mainHandler = handler.ApiGatewayEventHandler
+var mainHandler = handler.BasicExecutionEventHandler
 
 func main() {
 	lambda.Start(mainHandler)
