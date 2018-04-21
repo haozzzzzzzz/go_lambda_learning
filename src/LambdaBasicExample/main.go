@@ -1,7 +1,7 @@
 package main
 
 import (
-	"LambdaApiExample/handler"
+	"LambdaBasicExample/handler"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )

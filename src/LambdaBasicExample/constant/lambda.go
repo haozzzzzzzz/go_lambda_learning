@@ -1,5 +1,5 @@
 package constant
 
 const (
-	LambdaFunctionName = "LambdaApiExample"
+	LambdaFunctionName = "LambdaBasicExample"
 )
