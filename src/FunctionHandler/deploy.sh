@@ -24,7 +24,7 @@ FuncBuild() {
 
     echo "building program..."
     go build -o ${ProgramName} ./main.go
-    zip ${ProgramName}.zip ${ProgramName}
+    zip ${ProgramName}.zip ${ProgramName} config.yaml
 }
 
 # 运行

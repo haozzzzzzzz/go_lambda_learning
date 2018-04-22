@@ -76,10 +76,16 @@ FuncDeploy() {
 
 }
 
+# 删除函数
 FuncDelete() {
     echo "deleting..."
     aws lambda delete-function \
         --function-name ${ProgramName}
+}
+
+# 更新函数
+FuncUpdate() {
+    echo "updating..."
 }
 
 
@@ -159,10 +165,9 @@ case ${command} in
         FuncPolicy
     ;;
 
-    "redeploy")
+    "update")
         FuncBuild
-        FuncDelete
-        FuncDeploy
+        FuncUpdate
     ;;
 
     "permit-apigateway-test")
