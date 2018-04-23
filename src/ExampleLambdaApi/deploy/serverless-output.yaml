@@ -1,10 +1,33 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS Serverless Function
 Resources:
+  ApiGatewayApiTest:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: test
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          version: "1.0"
+          title: "lambda-example-lambda-api"
+        host: "ixpjxmoq79.execute-api.us-east-1.amazonaws.com"
+        basePath: "/Prod"
+        schemes:
+          - "https"
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ExampleLambdaApi:live/invocations"
+                passthroughBehavior: "when_no_match"
+                httpMethod: "POST"
+                type: "aws_proxy"
+
   ExampleLambdaApi:
     Properties:
       AutoPublishAlias: live
-      CodeUri: s3://lambda-example-lambda-api/dd97c7e991ffa5e39476d73a8fb8d8e9
+      CodeUri: s3://lambda-example-lambda-api/1816431a57dfb84136b9b9f37ffe57f6
       DeploymentPreference:
         Alarms:
         - '!Ref AliasErrorMetricGreaterThanZeroAlarm'
@@ -14,9 +37,25 @@ Resources:
           PreTraffic: '!Ref PreTrafficLambdaFunction'
         Type: Canary10Percent10Minutes
       Description: AWS Serverless Function
+      Events:
+        ApiGatewayEvent:
+          Properties:
+            RestApiId: !Ref ApiGatewayApiTest
+            Method: ANY
+            Path: /{proxy+}
+          Type: Api
       FunctionName: ExampleLambdaApi
       Handler: ExampleLambdaApi
-      Role: arn:aws:iam::842913648961:role/lambda_basic_execution
+      Role: arn:aws:iam::842913648961:role/lambda-gateway-execution-role
       Runtime: go1.x
     Type: AWS::Serverless::Function
+
+  ApiGatewayApiTestAccessPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ExampleLambdaApi
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApiTest}/*/*/*'
+
 Transform: AWS::Serverless-2016-10-31
