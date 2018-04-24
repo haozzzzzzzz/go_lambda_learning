@@ -1,4 +1,9 @@
 - http_method: GET
+  relative_path: /dynamodb/read
+  api_handler_func: ReadDynamoDB
+  api_handler_package_func: dynamodb
+  source_file: /api/dynamodb/api_dynamodb.go
+- http_method: GET
   relative_path: /metric
   api_handler_func: MetricHandlerFunc
   api_handler_package_func: metric

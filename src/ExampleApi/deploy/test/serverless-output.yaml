@@ -42,7 +42,7 @@ Resources:
   ExampleApi:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lambda-example-api-test/2018-04-24/a7a66fd6b2493b3bb9cf974c47ee5759
+      CodeUri: s3://lambda-example-api-test/2018-04-24/1283b47a58e31435e76b75b3a0fa4072
       DeploymentPreference:
         Type: Canary10Percent10Minutes
       Description: AWS Serverless Function
@@ -56,6 +56,35 @@ Resources:
           Type: Api
       FunctionName: ExampleApi
       Handler: ExampleApi
+      Role:
+        Fn::GetAtt:
+        - IAMRole
+        - Arn
       Runtime: go1.x
     Type: AWS::Serverless::Function
+  IAMRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - dynamodb:*
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: root
+      RoleName: ExampleApiExecutionRole
+    Type: AWS::IAM::Role
 Transform: AWS::Serverless-2016-10-31

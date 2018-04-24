@@ -2,6 +2,32 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: AWS Serverless Function
 Resources:
+  IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+
+      Path: /
+      Policies:
+      - PolicyName: "root"
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - dynamodb:*
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: "*"
+      RoleName: ExampleApiExecutionRole
   ApiAccessPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -43,6 +69,8 @@ Resources:
       DeploymentPreference:
         Type: Canary10Percent10Minutes
       Description: AWS Serverless Function
+      Role:
+        Fn::GetAtt: [IAMRole, Arn]
       Events:
         ApiEvent:
           Properties:
