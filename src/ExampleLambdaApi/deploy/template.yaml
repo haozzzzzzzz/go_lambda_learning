@@ -24,5 +24,5 @@ Resources:
           Type: Api
       FunctionName: ExampleLambdaApi
       Handler: ExampleLambdaApi
-      Role: arn:aws:iam::842913648961:role/lambda-gateway-execution-role
+      Role: arn:aws:iam::842913648961:role/lambda_basic_execution
       Runtime: go1.x

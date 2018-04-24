@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-echo building...
-lamb compile func
-
-echo deploying...
-lamd remote func
