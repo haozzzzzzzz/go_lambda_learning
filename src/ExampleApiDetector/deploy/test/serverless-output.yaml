@@ -42,9 +42,9 @@ Resources:
   ExampleApiDetector:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lambda-example-api-detector-test/2018-04-25/76b2d77b6a1337777c54c72b4d0f1453
+      CodeUri: s3://lambda-example-api-detector-test/2018-04-25/79645bc74a240f19b7360aa92f93f8c5
       DeploymentPreference:
-        Type: Canary10Percent10Minutes
+        Type: AllAtOnce
       Description: AWS Serverless Function
       Events:
         ApiEvent:

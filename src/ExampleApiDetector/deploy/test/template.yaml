@@ -41,7 +41,7 @@ Resources:
       AutoPublishAlias: test
       CodeUri: ./ExampleApiDetector.zip
       DeploymentPreference:
-        Type: Canary10Percent10Minutes
+        Type: AllAtOnce
       Description: AWS Serverless Function
       Events:
         ApiEvent:
