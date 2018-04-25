@@ -1,8 +1,6 @@
 package metric
 
 import (
-	"fmt"
-
 	dynamodb2 "github.com/haozzzzzzzz/go-lambda/resource/dynamodb"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -20,13 +18,13 @@ type User struct {
 var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 	HttpMethod:   "GET",
 	RelativePath: "/metric",
-	Handle: func(ctx *ginbuilder.Context) (resp interface{}, err error) {
+	Handle: func(ctx *ginbuilder.Context) (err error) {
 		defer func() {
 			if err != nil {
-				resp = &ginbuilder.ResponseBase{
-					ReturnCode: 1,
-					Message:    err.Error(),
-				}
+				ctx.Error(&ginbuilder.ReturnCode{
+					Code:    1,
+					Message: "error",
+				}, err)
 			}
 		}()
 
@@ -39,13 +37,8 @@ var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 		}
 
 		response := &struct {
-			ginbuilder.ResponseBase
 			User *User `json:"user"`
 		}{}
-		resp = response
-
-		response.ReturnCode = 0
-		response.Message = "normal"
 
 		db, err := dynamodb2.GetDynamodb("us-east-1")
 		if nil != err {
@@ -74,10 +67,9 @@ var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 			return
 		}
 
-		fmt.Println(person)
-
 		response.User = person
 
+		ctx.Success(response)
 		return
 	},
 }
