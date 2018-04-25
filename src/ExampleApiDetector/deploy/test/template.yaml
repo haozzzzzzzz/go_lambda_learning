@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Function
+Resources:
+  ApiAccessPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ExampleApiDetector
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/test/*/*
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      DefinitionBody:
+        basePath: /test
+        info:
+          title: ExampleApiDetector
+          version: "1.0"
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleApiDetector.Arn}/invocations
+        schemes:
+        - https
+        swagger: "2.0"
+      Name: ExampleApiDetector
+      StageName: test
+  ExampleApiDetector:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: ./ExampleApiDetector.zip
+      DeploymentPreference:
+        Type: Canary10Percent10Minutes
+      Description: AWS Serverless Function
+      Events:
+        ApiEvent:
+          Properties:
+            Method: ANY
+            Path: /{proxy+}
+            RestApiId:
+              Ref: ApiGatewayApi
+          Type: Api
+      FunctionName: ExampleApiDetector
+      Handler: ExampleApiDetector
+      Role:
+        Fn::GetAtt:
+        - ExampleApiDetectorRole
+        - Arn
+      Runtime: go1.x
+  ExampleApiDetectorRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: CloudWatchLogs
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: DynamoDBFullAccess
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:*
+            Resource: '*'
+      RoleName: ExampleApiDetectorRole
+Outputs:
+  ApiUrl:
+    Description: ExampleApiDetector(test) Api URL
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/test

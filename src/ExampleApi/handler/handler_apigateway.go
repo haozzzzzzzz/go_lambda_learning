@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"context"
+
 	"ExampleApi/api"
 	"ExampleApi/constant"
-	"context"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/awslabs/aws-lambda-go-api-proxy.git/gin"
@@ -14,7 +15,7 @@ import (
 // gin lambda adapter
 var ginLambda *ginadapter.GinLambda
 
-func NewGinLambda() (err error) {
+func newGinLambda() (err error) {
 	logrus.Infof("Lambda function %s initializing...", constant.LambdaFunctionName)
 	ginEngine := ginbuilder.GetEngine()
 	err = api.BindRouters(ginEngine)
@@ -28,7 +29,7 @@ func NewGinLambda() (err error) {
 }
 
 func init() {
-	err := NewGinLambda()
+	err := newGinLambda()
 	if nil != err {
 		logrus.Errorf("new gin lambda failed. %s", err)
 		return
@@ -37,7 +38,7 @@ func init() {
 
 func ApiGatewayEventHandler(ctx context.Context, request *events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
 	if nil == ginLambda {
-		err = NewGinLambda()
+		err = newGinLambda()
 		if nil != err {
 			logrus.Errorf("new gin lambda failed. \n%s.", err)
 			return

@@ -2,15 +2,15 @@
 export GOROOT=/usr/local/go
 export GOPATH=/Users/hao/Documents/Projects/Github/go_lambda_learning
 
-if [ -e lamb ]
+if [ -e lbuild ]
 then
-    rm lamb
+    rm lbuild
 fi
 
-if [ -e lamd ]
+if [ -e ldeploy ]
 then
-    rm lamd
+    rm ldeploy
 fi
 
-go build -o lamb ${GOPATH}/src/github.com/haozzzzzzzz/go-lambda/tool/lambda-build/main.go
-go build -o lamd ${GOPATH}/src/github.com/haozzzzzzzz/go-lambda/tool/lambda-deploy/main.go
+go build -o lbuild ${GOPATH}/src/github.com/haozzzzzzzz/go-lambda/tool/lambda-build/main.go
+go build -o ldeploy ${GOPATH}/src/github.com/haozzzzzzzz/go-lambda/tool/lambda-deploy/main.go

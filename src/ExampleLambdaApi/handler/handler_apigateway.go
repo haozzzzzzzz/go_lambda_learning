@@ -4,6 +4,7 @@ import (
 	"ExampleLambdaApi/api"
 	"ExampleLambdaApi/constant"
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/awslabs/aws-lambda-go-api-proxy.git/gin"
@@ -36,6 +37,7 @@ func init() {
 }
 
 func ApiGatewayEventHandler(ctx context.Context, request *events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
+	fmt.Print(ginLambda)
 	if nil == ginLambda {
 		err = NewGinLambda()
 		if nil != err {
