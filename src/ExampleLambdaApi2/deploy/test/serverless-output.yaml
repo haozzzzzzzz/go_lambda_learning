@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Function
+Outputs:
+  ApiUrl:
+    Description: ExampleLambdaApi2(test) Api URL
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/test
+Resources:
+  ApiAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ExampleLambdaApi2
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/test/*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayApi:
+    Properties:
+      DefinitionBody:
+        basePath: /test
+        info:
+          title: ExampleLambdaApi2
+          version: '1.0'
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleLambdaApi2.Arn}/invocations
+        schemes:
+        - https
+        swagger: '2.0'
+      Name: ExampleLambdaApi2
+      StageName: test
+    Type: AWS::Serverless::Api
+  ExampleLambdaApi2:
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: s3://lambda-example-lambda-api2-test/2018-04-25/55d3a8034a3550a3673c6628d6011ab1
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      Events:
+        ApiEvent:
+          Properties:
+            Method: ANY
+            Path: /{proxy+}
+            RestApiId:
+              Ref: ApiGatewayApi
+          Type: Api
+      FunctionName: ExampleLambdaApi2
+      Handler: ExampleLambdaApi2
+      Role:
+        Fn::GetAtt:
+        - ExampleLambdaApi2Role
+        - Arn
+      Runtime: go1.x
+    Type: AWS::Serverless::Function
+  ExampleLambdaApi2Role:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+          Version: '2012-10-17'
+        PolicyName: CloudWatchLogs
+      RoleName: ExampleLambdaApi2Role
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31
