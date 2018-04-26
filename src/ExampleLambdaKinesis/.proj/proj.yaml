@@ -1,0 +1,5 @@
+name: ExampleLambdaKinesis
+description: AWS Serverless Function
+project_path: /Users/hao/Documents/Projects/Github/go_lambda_learning/src/ExampleLambdaKinesis
+event_source_type: 0
+mode: 511

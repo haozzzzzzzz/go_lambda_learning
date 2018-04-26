@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Function
+Outputs: {}
+Resources:
+  ExampleLambdaKinesis:
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: s3://lambda-example-lambda-kinesis-test/2018-04-27/0f0234d58fe8db158f0dec9734c18de4
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      FunctionName: ExampleLambdaKinesis
+      Handler: ExampleLambdaKinesis
+      Role:
+        Fn::GetAtt:
+        - ExampleLambdaKinesisRole
+        - Arn
+      Runtime: go1.x
+    Type: AWS::Serverless::Function
+  ExampleLambdaKinesisRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+          Version: '2012-10-17'
+        PolicyName: CloudWatchLogs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - kinesis:*
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: KinesisFullAccess
+      RoleName: ExampleLambdaKinesisRole
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31
