@@ -6,12 +6,15 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	kinesis2 "github.com/aws/aws-sdk-go/service/kinesis"
+	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/haozzzzzzzz/go-lambda/resource/kinesis"
 	"github.com/haozzzzzzzz/go-rapid-development/utils/id"
 	"github.com/sirupsen/logrus"
 )
 
 func BasicExecutionEventHandler(ctx context.Context, event interface{}) (msg string, err error) {
+	xray.Configure(xray.Config{LogLevel: "trace"})
+
 	defer func() {
 		if nil != err {
 			msg = err.Error()

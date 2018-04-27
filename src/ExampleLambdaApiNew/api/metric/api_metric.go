@@ -31,7 +31,8 @@ var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 		queryData := struct {
 			Id string `form:"id" binding:"required"`
 		}{}
-		err = ctx.BindQueryData(&queryData)
+		_, err = ctx.BindQueryData(&queryData)
+		_, err = ctx.BindQueryData(&queryData)
 		if err != nil {
 			return
 		}
@@ -69,7 +70,7 @@ var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 
 		response.User = person
 
-		ctx.Success(response)
+		ctx.SuccessReturn(response)
 		return
 	},
 }

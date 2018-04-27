@@ -5,7 +5,7 @@ Resources:
   ExampleLambdaKinesis:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lambda-example-lambda-kinesis-test/2018-04-27/1e9370b46af7e06955cfa11381f9621f
+      CodeUri: s3://lambda-example-lambda-kinesis-test/2018-04-27/cbccf2bff0bdabb26599af8a11c11d2a
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
