@@ -32,7 +32,6 @@ var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 			Id string `form:"id" binding:"required"`
 		}{}
 		_, err = ctx.BindQueryData(&queryData)
-		_, err = ctx.BindQueryData(&queryData)
 		if err != nil {
 			return
 		}

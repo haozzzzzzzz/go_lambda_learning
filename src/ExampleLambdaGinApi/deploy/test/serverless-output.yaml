@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Function
+Outputs:
+  ApiUrl:
+    Description: ExampleLambdaGinApi(test) Api URL
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/test
+Resources:
+  ApiAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ExampleLambdaGinApi
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/test/*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayApi:
+    Properties:
+      DefinitionBody:
+        basePath: /test
+        info:
+          title: ExampleLambdaGinApi
+          version: '1.0'
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleLambdaGinApi.Arn}/invocations
+        schemes:
+        - https
+        swagger: '2.0'
+      Name: ExampleLambdaGinApi
+      StageName: test
+    Type: AWS::Serverless::Api
+  ExampleLambdaGinApi:
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: s3://lambda-example-lambda-gin-api-test/2018-04-28/f5b43a6fc7f38f64b94841479ead5b3e
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      Events:
+        ApiEvent:
+          Properties:
+            Method: ANY
+            Path: /{proxy+}
+            RestApiId:
+              Ref: ApiGatewayApi
+          Type: Api
+      FunctionName: ExampleLambdaGinApi
+      Handler: ExampleLambdaGinApi
+      Role:
+        Fn::GetAtt:
+        - ExampleLambdaGinApiRole
+        - Arn
+      Runtime: go1.x
+      Timeout: 30
+    Type: AWS::Serverless::Function
+  ExampleLambdaGinApiRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+          Version: '2012-10-17'
+        PolicyName: CloudWatchLogs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:*
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: DynamoDBFullAccess
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - xray:*
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: XRayFullAccess
+      RoleName: ExampleLambdaGinApiRole
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31

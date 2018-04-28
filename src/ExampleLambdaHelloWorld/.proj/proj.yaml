@@ -1,0 +1,5 @@
+name: ExampleLambdaHelloWorld
+description: AWS Serverless Function
+project_path: /Users/hao/Documents/Projects/Github/go_lambda_learning/src/ExampleLambdaHelloWorld
+event_source_type: 0
+mode: 511

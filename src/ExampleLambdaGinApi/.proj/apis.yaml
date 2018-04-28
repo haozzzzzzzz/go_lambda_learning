@@ -1,0 +1,15 @@
+- http_method: POST
+  relative_path: /user/add
+  api_handler_func: AddUser
+  api_handler_package_func: db
+  source_file: /api/db/api_user.go
+- http_method: GET
+  relative_path: /user/get
+  api_handler_func: GetUser
+  api_handler_package_func: db
+  source_file: /api/db/api_user.go
+- http_method: GET
+  relative_path: /metric
+  api_handler_func: MetricHandlerFunc
+  api_handler_package_func: metric
+  source_file: /api/metric/api_metric.go
