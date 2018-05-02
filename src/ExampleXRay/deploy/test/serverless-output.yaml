@@ -42,7 +42,7 @@ Resources:
   ExampleXRay:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lambda-example-x-ray-test/2018-04-27/ba3eb958b1c55dc80920da49306089dd
+      CodeUri: s3://lambda-example-x-ray-test/2018-05-02/5b724b1e99df4660f72260289585bbbc
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
@@ -61,6 +61,7 @@ Resources:
         - ExampleXRayRole
         - Arn
       Runtime: go1.x
+      Timeout: 30
     Type: AWS::Serverless::Function
   ExampleXRayRole:
     Properties:

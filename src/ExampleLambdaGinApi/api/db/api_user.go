@@ -81,7 +81,8 @@ var GetUser ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 			return
 		}
 
-		result, err := db.GetItem(&dynamodb.GetItemInput{
+		requestContext := ctx.GinContext.Request.Context()
+		result, err := db.GetItemWithContext(requestContext, &dynamodb.GetItemInput{
 			TableName: aws.String("user"), // 设置表名
 			Key: map[string]*dynamodb.AttributeValue{
 				"uid": {

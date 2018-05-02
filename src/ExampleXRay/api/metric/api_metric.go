@@ -7,7 +7,7 @@ import (
 
 var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 	HttpMethod:   "GET",
-	RelativePath: "/metric",
+	RelativePath: "/api/v1/metric",
 	Handle: func(ctx *ginbuilder.Context) (err error) {
 		ctx.SuccessReturn(map[string]interface{}{
 			"info": "hello, world",

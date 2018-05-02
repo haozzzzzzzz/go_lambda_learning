@@ -58,6 +58,7 @@ Resources:
         - ExampleXRayRole
         - Arn
       Runtime: go1.x
+      Timeout: 30
   ExampleXRayRole:
     Type: AWS::IAM::Role
     Properties:

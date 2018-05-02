@@ -42,7 +42,7 @@ Resources:
   ExampleLambdaGinApi:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lambda-example-lambda-gin-api-test/2018-04-28/d254fd18efe3e963b30ba69e5c6d1052
+      CodeUri: s3://lambda-example-lambda-gin-api-test/2018-05-02/55dc071fd67c7fe33ca7c04036856bc1
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
