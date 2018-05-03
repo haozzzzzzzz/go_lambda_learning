@@ -7,17 +7,17 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName:
-        Ref: ExampleXRaytest
+        Ref: ExampleXRayprod
       Principal: apigateway.amazonaws.com
       SourceArn:
-        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/test/*/*
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/prod/*/*
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
       DefinitionBody:
-        basePath: /test
+        basePath: /prod
         info:
-          title: ExampleXRaytest
+          title: ExampleXRayprod
           version: "1.0"
         paths:
           /{proxy+}:
@@ -29,19 +29,19 @@ Resources:
                 passthroughBehavior: when_no_match
                 type: aws_proxy
                 uri:
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleXRaytest.Arn}/invocations
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleXRayprod.Arn}/invocations
         schemes:
         - https
         swagger: "2.0"
-      Name: ExampleXRaytest
-      StageName: test
-  ExampleXRaytest:
+      Name: ExampleXRayprod
+      StageName: prod
+  ExampleXRayprod:
     Type: AWS::Serverless::Function
     Properties:
-      AutoPublishAlias: test
-      CodeUri: ./ExampleXRaytest.zip
+      AutoPublishAlias: prod
+      CodeUri: ./ExampleXRayprod.zip
       DeploymentPreference:
-        Type: AllAtOnce
+        Type: Canary10Percent10Minutes
       Description: AWS Serverless Function
       Events:
         ApiEvent:
@@ -51,15 +51,15 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
           Type: Api
-      FunctionName: ExampleXRaytest
-      Handler: ExampleXRaytest
+      FunctionName: ExampleXRayprod
+      Handler: ExampleXRayprod
       Role:
         Fn::GetAtt:
-        - ExampleXRaytestRole
+        - ExampleXRayprodRole
         - Arn
       Runtime: go1.x
       Timeout: 30
-  ExampleXRaytestRole:
+  ExampleXRayprodRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -90,9 +90,9 @@ Resources:
             Action:
             - xray:*
             Resource: '*'
-      RoleName: ExampleXRaytestRole
+      RoleName: ExampleXRayprodRole
 Outputs:
   ApiUrl:
-    Description: ExampleXRaytest(test) Api URL
+    Description: ExampleXRayprod(prod) Api URL
     Value:
-      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/test
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/prod
