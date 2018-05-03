@@ -15,3 +15,23 @@ var MetricHandlerFunc ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 		return
 	},
 }
+
+var TestPathParams ginbuilder.HandleFunc = ginbuilder.HandleFunc{
+	HttpMethod:   "GET",
+	RelativePath: "/api/v1/test_path/:key",
+	Handle: func(ctx *ginbuilder.Context) (err error) {
+		// request path data
+		pathData := struct {
+			Key string `json:"key" form:"key" binding:"required"`
+		}{}
+		code, err := ctx.BindPathData(&pathData)
+		if err != nil {
+			ctx.Errorf(code, "verify  path data failed. \n%s.", err)
+			return
+		}
+
+		ctx.SuccessReturn(pathData)
+
+		return
+	},
+}

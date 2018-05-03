@@ -1,4 +1,9 @@
 - http_method: GET
+  relative_path: /api/v1/test_path/:key
+  api_handler_func: TestPathParams
+  api_handler_package_func: metric
+  source_file: /api/metric/api_metric.go
+- http_method: GET
   relative_path: /api/v1/metric
   api_handler_func: MetricHandlerFunc
   api_handler_package_func: metric
