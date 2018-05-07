@@ -42,7 +42,7 @@ Resources:
   ExampleXRaytest:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lh-lambda-deploy/example-x-ray-test/2018-05-03/e72a5cc39363d36bd17d5517c224dd48
+      CodeUri: s3://lh-lambda-deploy/example-x-ray-test/2018-05-07/5522311b55167584652a97e1e798b68f
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
