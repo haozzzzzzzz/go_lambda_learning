@@ -5,7 +5,7 @@ Resources:
   ExampleApiAuthorizertest:
     Properties:
       AutoPublishAlias: test
-      CodeUri: s3://lh-lambda-deploy/example-api-authorizer-test/2018-05-07/21df3ff918c9a1cd00deaddc2263a526
+      CodeUri: s3://lh-lambda-deploy/example-api-authorizer-test/2018-05-08/b8aa67192761a00b5126d54a10765a5a
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
