@@ -1,0 +1,11 @@
+authorizers:
+- name: AuthorizerExampleAuthorizer1test
+  function_handler: ExampleAuthorizer1test
+  headers:
+  - shuangji
+  queries: []
+- name: AuthorizerExampleAuthorizer2test
+  function_handler: ExampleAuthorizer2test
+  headers: []
+  queries:
+  - uid

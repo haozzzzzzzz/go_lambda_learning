@@ -1,0 +1,5 @@
+name: ExampleApiAuthorizer1And2
+description: AWS Serverless Function
+project_path: /Users/hao/Documents/Projects/Github/go_lambda_learning/src/ExampleApiAuthorizer1And2
+event_source_type: 2
+mode: 511

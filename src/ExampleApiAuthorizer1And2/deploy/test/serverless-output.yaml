@@ -1,0 +1,140 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Function
+Outputs:
+  ApiUrl:
+    Description: ExampleApiAuthorizer1And2test(test) Api URL
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/test
+Resources:
+  ApiAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ExampleApiAuthorizer1And2test
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/test/*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayApi:
+    Properties:
+      DefinitionBody:
+        basePath: /test
+        info:
+          title: ExampleApiAuthorizer1And2test
+          version: '1.0'
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              security:
+              - AuthorizerExampleAuthorizer1test: []
+              - AuthorizerExampleAuthorizer2test: []
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleApiAuthorizer1And2test.Arn}/invocations
+        schemes:
+        - https
+        securityDefinitions:
+          AuthorizerExampleAuthorizer1test:
+            in: header
+            name: Unused
+            type: apiKey
+            x-amazon-apigateway-authorizer:
+              authorizerResultTtlInSeconds: 300
+              authorizerUri:
+                Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ExampleAuthorizer1test/invocations
+              identitySource: method.request.header.shuangji
+              type: request
+            x-amazon-apigateway-authtype: custom
+          AuthorizerExampleAuthorizer2test:
+            in: header
+            name: Unused
+            type: apiKey
+            x-amazon-apigateway-authorizer:
+              authorizerResultTtlInSeconds: 300
+              authorizerUri:
+                Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ExampleAuthorizer2test/invocations
+              identitySource: method.request.querystring.uid
+              type: request
+            x-amazon-apigateway-authtype: custom
+        swagger: '2.0'
+      Name: ExampleApiAuthorizer1And2test
+      StageName: test
+    Type: AWS::Serverless::Api
+  AuthorizerAuthorizerExampleAuthorizer1testAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: ExampleAuthorizer1test
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/authorizers/*
+    Type: AWS::Lambda::Permission
+  AuthorizerAuthorizerExampleAuthorizer2testAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: ExampleAuthorizer2test
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/authorizers/*
+    Type: AWS::Lambda::Permission
+  ExampleApiAuthorizer1And2test:
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: s3://lh-lambda-deploy/example-api-authorizer1-and2-test/2018-05-08/712539340955ed24ae79ef15a4295498
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      Events:
+        ApiEvent:
+          Properties:
+            Method: ANY
+            Path: /{proxy+}
+            RestApiId:
+              Ref: ApiGatewayApi
+          Type: Api
+      FunctionName: ExampleApiAuthorizer1And2test
+      Handler: ExampleApiAuthorizer1And2test
+      Role:
+        Fn::GetAtt:
+        - ExampleApiAuthorizer1And2testRole
+        - Arn
+      Runtime: go1.x
+      Timeout: 30
+    Type: AWS::Serverless::Function
+  ExampleApiAuthorizer1And2testRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+          Version: '2012-10-17'
+        PolicyName: CloudWatchLogs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - xray:*
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: XRayFullAccess
+      RoleName: ExampleApiAuthorizer1And2testRole
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31
