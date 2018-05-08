@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Function
+Resources:
+  ExampleApiAuthorizer2test:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: ./ExampleApiAuthorizer2test.zip
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      FunctionName: ExampleApiAuthorizer2test
+      Handler: ExampleApiAuthorizer2test
+      Role:
+        Fn::GetAtt:
+        - ExampleApiAuthorizer2testRole
+        - Arn
+      Runtime: go1.x
+      Timeout: 30
+  ExampleApiAuthorizer2testRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: CloudWatchLogs
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      RoleName: ExampleApiAuthorizer2testRole
+Outputs: {}
