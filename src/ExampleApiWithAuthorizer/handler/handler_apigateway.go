@@ -41,7 +41,7 @@ func init() {
 	}
 }
 
-func ApiGatewayEventHandler(ctx context.Context, request *events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
+func ApiGatewayProxyEventHandler(ctx context.Context, request *events.APIGatewayProxyRequest) (response events.APIGatewayProxyResponse, err error) {
 	if nil == ginLambda {
 		err = NewGinLambda()
 		if nil != err {

@@ -1,0 +1,6 @@
+authorizers:
+- name: TestAuthorizer
+  function_handler: ExampleApiAuthorizertest
+  headers:
+  - shuangji
+  queries: []

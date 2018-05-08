@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Function
+Outputs:
+  ApiUrl:
+    Description: ExampleApiWithAuthorizertest(test) Api URL
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/test
+Resources:
+  ApiAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ExampleApiWithAuthorizertest
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/test/*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayApi:
+    Properties:
+      DefinitionBody:
+        basePath: /test
+        info:
+          title: ExampleApiWithAuthorizertest
+          version: '1.0'
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              security:
+              - TestAuthorizer: []
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleApiWithAuthorizertest.Arn}/invocations
+        schemes:
+        - https
+        securityDefinitions:
+          TestAuthorizer:
+            in: header
+            name: Unused
+            type: apiKey
+            x-amazon-apigateway-authorizer:
+              authorizerResultTtlInSeconds: 300
+              authorizerUri:
+                Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:ExampleApiAuthorizertest/invocations
+              identitySource: method.request.header.shuangji
+              type: request
+            x-amazon-apigateway-authtype: custom
+        swagger: '2.0'
+      Name: ExampleApiWithAuthorizertest
+      StageName: test
+    Type: AWS::Serverless::Api
+  AuthorizerTestAuthorizerAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: ExampleApiAuthorizertest
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/authorizers/*
+    Type: AWS::Lambda::Permission
+  ExampleApiWithAuthorizertest:
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: s3://lh-lambda-deploy/example-api-with-authorizer-test/2018-05-08/69aea17bdfc292ea37b9febd54365835
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      Events:
+        ApiEvent:
+          Properties:
+            Method: ANY
+            Path: /{proxy+}
+            RestApiId:
+              Ref: ApiGatewayApi
+          Type: Api
+      FunctionName: ExampleApiWithAuthorizertest
+      Handler: ExampleApiWithAuthorizertest
+      Role:
+        Fn::GetAtt:
+        - ExampleApiWithAuthorizertestRole
+        - Arn
+      Runtime: go1.x
+      Timeout: 30
+    Type: AWS::Serverless::Function
+  ExampleApiWithAuthorizertestRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+          Version: '2012-10-17'
+        PolicyName: CloudWatchLogs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - xray:*
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: XRayFullAccess
+      RoleName: ExampleApiWithAuthorizertestRole
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31
