@@ -2,23 +2,26 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: AWS Serverless Function
 Resources:
-  ExampleSAMLocaltest:
+  ExampleSAMLocaldev:
     Type: AWS::Serverless::Function
     Properties:
-      AutoPublishAlias: test
-      CodeUri: ./ExampleSAMLocaltest.zip
+      AutoPublishAlias: dev
+      CodeUri: ./ExampleSAMLocaldev.zip
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
-      FunctionName: ExampleSAMLocaltest
-      Handler: ExampleSAMLocaltest
+      FunctionName: ExampleSAMLocaldev
+      Handler: ExampleSAMLocaldev
       Role:
         Fn::GetAtt:
-        - ExampleSAMLocaltestRole
+        - ExampleSAMLocaldevRole
         - Arn
       Runtime: go1.x
+      Tags:
+        FunctionGroup: ExampleSAMLocal
+        Stage: dev
       Timeout: 30
-  ExampleSAMLocaltestRole:
+  ExampleSAMLocaldevRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -41,5 +44,5 @@ Resources:
             - logs:CreateLogGroup
             - logs:PutLogEvents
             Resource: arn:aws:logs:*:*:*
-      RoleName: ExampleSAMLocaltestRole
+      RoleName: ExampleSAMLocaldevRole
 Outputs: {}

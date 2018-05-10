@@ -2,23 +2,26 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS Serverless Function
 Outputs: {}
 Resources:
-  ExampleSAMLocaltest:
+  ExampleSAMLocaldev:
     Properties:
-      AutoPublishAlias: test
-      CodeUri: s3://lh-lambda-deploy/example-s-a-m-local-test/2018-05-10/bd730cb3f66eaa36cf7232dc9bc62946
+      AutoPublishAlias: dev
+      CodeUri: s3://lh-lambda-deploy/example-s-a-m-local-dev/2018-05-10/6c5d1a1ed713ae4ca693611447393138
       DeploymentPreference:
         Type: AllAtOnce
       Description: AWS Serverless Function
-      FunctionName: ExampleSAMLocaltest
-      Handler: ExampleSAMLocaltest
+      FunctionName: ExampleSAMLocaldev
+      Handler: ExampleSAMLocaldev
       Role:
         Fn::GetAtt:
-        - ExampleSAMLocaltestRole
+        - ExampleSAMLocaldevRole
         - Arn
       Runtime: go1.x
+      Tags:
+        FunctionGroup: ExampleSAMLocal
+        Stage: dev
       Timeout: 30
     Type: AWS::Serverless::Function
-  ExampleSAMLocaltestRole:
+  ExampleSAMLocaldevRole:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
@@ -40,6 +43,6 @@ Resources:
             Resource: arn:aws:logs:*:*:*
           Version: '2012-10-17'
         PolicyName: CloudWatchLogs
-      RoleName: ExampleSAMLocaltestRole
+      RoleName: ExampleSAMLocaldevRole
     Type: AWS::IAM::Role
 Transform: AWS::Serverless-2016-10-31
