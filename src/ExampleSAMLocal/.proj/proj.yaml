@@ -1,0 +1,5 @@
+name: ExampleSAMLocal
+description: AWS Serverless Function
+project_path: /Users/hao/Documents/Projects/Github/go_lambda_learning/src/ExampleSAMLocal
+event_source_type: 0
+mode: 511

@@ -1,5 +1,5 @@
 # go_lambda_learning
-go lambda learning
+go lambda learning。保证工具可以使用，不保证示例是立即可以通过编译的。
 
 
 

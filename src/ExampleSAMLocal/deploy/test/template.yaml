@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Function
+Resources:
+  ExampleSAMLocaltest:
+    Type: AWS::Serverless::Function
+    Properties:
+      AutoPublishAlias: test
+      CodeUri: ./ExampleSAMLocaltest.zip
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      FunctionName: ExampleSAMLocaltest
+      Handler: ExampleSAMLocaltest
+      Role:
+        Fn::GetAtt:
+        - ExampleSAMLocaltestRole
+        - Arn
+      Runtime: go1.x
+      Timeout: 30
+  ExampleSAMLocaltestRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: CloudWatchLogs
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+      RoleName: ExampleSAMLocaltestRole
+Outputs: {}
