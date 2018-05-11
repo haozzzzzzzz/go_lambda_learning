@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Serverless Function
+Outputs:
+  ApiUrl:
+    Description: ExampleTestIAMUserdev(dev) Api URL
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/dev
+Resources:
+  ApiAccessPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ExampleTestIAMUserdev
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayApi}/dev/*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayApi:
+    Properties:
+      DefinitionBody:
+        basePath: /dev
+        info:
+          title: ExampleTestIAMUserdev
+          version: '1.0'
+        paths:
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ExampleTestIAMUserdev.Arn}/invocations
+        schemes:
+        - https
+        swagger: '2.0'
+      Name: ExampleTestIAMUserdev
+      StageName: dev
+    Type: AWS::Serverless::Api
+  ExampleTestIAMUserdev:
+    Properties:
+      AutoPublishAlias: dev
+      CodeUri: s3://lh-lambda-deploy/example-test-i-a-m-user-dev/2018-05-11/e87e18015c8a02e199e47f5868bdb09c
+      DeploymentPreference:
+        Type: AllAtOnce
+      Description: AWS Serverless Function
+      Events:
+        ApiEvent:
+          Properties:
+            Method: ANY
+            Path: /{proxy+}
+            RestApiId:
+              Ref: ApiGatewayApi
+          Type: Api
+      FunctionName: ExampleTestIAMUserdev
+      Handler: ExampleTestIAMUserdev
+      Role:
+        Fn::GetAtt:
+        - ExampleTestIAMUserdevRole
+        - Arn
+      Runtime: go1.x
+      Tags:
+        FunctionGroup: ExampleTestIAMUser
+        Stage: dev
+      Timeout: 30
+    Type: AWS::Serverless::Function
+  ExampleTestIAMUserdevRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogStream
+            - logs:CreateLogGroup
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+          Version: '2012-10-17'
+        PolicyName: CloudWatchLogs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - xray:*
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: XRayFullAccess
+      RoleName: ExampleTestIAMUserdevRole
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31
