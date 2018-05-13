@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
 command=$1
 
-endpointUrl="http://0.0.0.0:8000"
+endpointUrl="http://192.168.0.36:8000"
 tableName="video_buddy_home_dev"
+
+FuncListTables() {
+    aws dynamodb list-tables \
+    --endpoint-url ${endpointUrl}
+}
+
 FuncCreateTable() {
     aws dynamodb create-table \
     --endpoint-url ${endpointUrl} \
     --table-name ${tableName} \
     --attribute-definitions \
         AttributeName=home_id,AttributeType=N \
-        AttributeName=timestamp,AttributeType=N \
     --key-schema \
         AttributeName=home_id,KeyType=HASH \
-        AttributeName=timestamp,KeyType=RANGE \
     --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1
 }
 
@@ -43,6 +47,9 @@ FuncDeleteTable() {
 }
 
 case ${command} in
+"list-tables")
+    FuncListTables
+;;
 "create-table")
     FuncCreateTable
 ;;
@@ -54,9 +61,6 @@ case ${command} in
 ;;
 "query")
     FuncQuery
-;;
-"query-title")
-    FuncQueryTitle
 ;;
 "delete-table")
     FuncDeleteTable

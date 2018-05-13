@@ -9,13 +9,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	dynamodb2 "github.com/haozzzzzzzz/go-lambda/resource/dynamodb"
 )
 
 func main() {
 	sess, err := session.NewSession(&aws.Config{
 		Region:   aws.String("ap-south-1"),
-		Endpoint: aws.String("http://0.0.0.0:8000"),
+		Endpoint: aws.String("http://192.168.0.36:8000"),
 	})
 	if nil != err {
 		log.Fatal(err)
@@ -23,28 +23,29 @@ func main() {
 	}
 
 	svc := dynamodb.New(sess)
-	output, err := svc.Query(&dynamodb.QueryInput{
-		TableName:              aws.String("video_buddy_home_dev"),
+	client := dynamodb2.DynamoDBTable{
+		TableName: "video_buddy_home_dev",
+		Client:    svc,
+	}
+	var records []model.Home
+	err = client.Query(&dynamodb.QueryInput{
 		KeyConditionExpression: aws.String("home_id = :home_id"),
+		FilterExpression:       aws.String("contains(device_ids, :device_id)"),
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 			":home_id": {
 				N: aws.String("1"),
 			},
+			":device_id": {
+				S: aws.String("a"),
+			},
 		},
-	})
+	}, &records)
 	if nil != err {
 		log.Fatal(err)
 		return
 	}
 
-	var resultRecords []*model.Home
-	err = dynamodbattribute.UnmarshalListOfMaps(output.Items, &resultRecords)
-	if nil != err {
-		log.Fatal(err)
-		return
-	}
-
-	for _, rec := range resultRecords {
+	for _, rec := range records {
 		fmt.Println(rec)
 	}
 }
