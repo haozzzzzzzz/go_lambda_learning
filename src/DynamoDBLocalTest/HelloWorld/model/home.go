@@ -34,6 +34,15 @@ type Home struct {
 	CreateTime          time.Time           `json:"create_time"`           // 当前时间
 }
 
+// 主题类型
+type ThemeTypeType uint8
+
+const (
+	ThemeTypeMovie      ThemeTypeType = 1 // 电影
+	ThemeTypeShortVideo ThemeTypeType = 2 // 短视频
+	ThemeTypeMV         ThemeTypeType = 3 // MV
+)
+
 // 主题模型
 type Theme struct {
 	PartitionKey        uint32    `json:"partition_key"`         // 分区键
@@ -60,16 +69,16 @@ type HomeTheme struct {
 type ThemeResourceTypeType uint8
 
 const (
-	ThemeResourceTypeMovie      ThemeResourceTypeType = 1 // 电影
-	ThemeResourceTypeShortVideo ThemeResourceTypeType = 2 // 短视频
-	ThemeResourceTypeMV         ThemeResourceTypeType = 3 // MV
+	ThemeResourceTypeMovie      = ThemeResourceTypeType(ThemeTypeMovie)      // 电影
+	ThemeResourceTypeShortVideo = ThemeResourceTypeType(ThemeTypeShortVideo) // 短视频
+	ThemeResourceTypeMV         = ThemeResourceTypeType(ThemeTypeMV)         // MV
 )
 
 // 主题资源
 type ThemeResource struct {
-	ThemeId    uint32    `json:"theme_id"`    // 主题ID
-	ResourceId string    `json:"resource_id"` // 资源ID
-	SortOrder  uint32    `json:"sort_order"`  // 排序序号
-	Type       uint32    `json:"type"`        // 资源类型
-	CreateTime time.Time `json:"create_time"` // 记录创建时间
+	ThemeId    uint32                `json:"theme_id"`    // 主题ID
+	ResourceId string                `json:"resource_id"` // 资源ID
+	SortOrder  uint32                `json:"sort_order"`  // 排序序号
+	Type       ThemeResourceTypeType `json:"type"`        // 资源类型
+	CreateTime time.Time             `json:"create_time"` // 记录创建时间
 }
