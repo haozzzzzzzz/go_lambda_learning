@@ -2,7 +2,7 @@
 command=$1
 
 endpointUrl="http://0.0.0.0:8000"
-tableName="video_buddy_counter_dev"
+tableName="video_buddy_cache_dev"
 
 FuncListTables() {
     aws dynamodb list-tables \
@@ -14,9 +14,9 @@ FuncCreateTable() {
     --endpoint-url ${endpointUrl} \
     --table-name ${tableName} \
     --attribute-definitions \
-        AttributeName=home_id,AttributeType=N \
+        AttributeName=key,AttributeType=S \
     --key-schema \
-        AttributeName=home_id,KeyType=HASH \
+        AttributeName=key,KeyType=HASH \
     --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1
 }
 
