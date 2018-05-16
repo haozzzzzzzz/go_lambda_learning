@@ -38,23 +38,30 @@ func main() {
 			Address: "Shenzhen",
 		},
 	}
-	err = simpleStore.AddSimpleStore(obj)
-	if nil != err {
-		log.Fatal(err)
-		return
-	}
-
 	newObj, err := simpleStore.GetSimpleStore(obj.PartitionKey, obj.SortKey)
 	if nil != err {
 		log.Fatal(err)
 		return
 	}
-
 	fmt.Println(newObj)
 
-	err = simpleStore.DeleteSimpleStore(obj.PartitionKey, obj.SortKey)
-	if nil != err {
-		log.Fatal(err)
-		return
-	}
+	//err = simpleStore.AddSimpleStore(obj)
+	//if nil != err {
+	//	log.Fatal(err)
+	//	return
+	//}
+	//
+	//newObj, err = simpleStore.GetSimpleStore(obj.PartitionKey, obj.SortKey)
+	//if nil != err {
+	//	log.Fatal(err)
+	//	return
+	//}
+	//
+	//fmt.Println(newObj)
+	//
+	//err = simpleStore.DeleteSimpleStore(obj.PartitionKey, obj.SortKey)
+	//if nil != err {
+	//	log.Fatal(err)
+	//	return
+	//}
 }
