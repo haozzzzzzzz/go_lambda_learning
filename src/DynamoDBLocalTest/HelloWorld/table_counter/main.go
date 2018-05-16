@@ -20,17 +20,15 @@ func main() {
 		return
 	}
 	svc := dynamodb.New(sess)
-	client := table.DynamoDBTable{
-		TableName: "video_buddy_counter_dev",
-		Client:    svc,
-	}
-	_ = client
-
-	newNum, err := client.IncrCounter(map[string]*dynamodb.AttributeValue{
-		"home_id": {
-			N: aws.String("1"),
+	counter := table.CounterTable{
+		DynamoDBTable: table.DynamoDBTable{
+			TableName: "video_buddy_counter_dev",
+			Client:    svc,
+			Ctx:       aws.BackgroundContext(),
 		},
-	}, "counter", 1)
+	}
+
+	newNum, err := counter.Incr("hello", "1", 1)
 	if nil != err {
 		log.Fatal(err)
 		return
