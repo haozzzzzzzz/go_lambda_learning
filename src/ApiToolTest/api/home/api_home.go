@@ -38,9 +38,23 @@ var HandlerFuncName ginbuilder.HandleFunc = ginbuilder.HandleFunc{
 			return
 		}
 
+		type Tag struct {
+			Name string `json:"name"`
+		}
+
 		// response data
 		respData := &struct {
-			Result string `json:"result"`
+			Result  string          `json:"result"`
+			Tags    []*Tag          `json:"tags"`
+			ATag    *Tag            `json:"a_tag"`
+			BTag    Tag             `json:"b_tag"`
+			MTag    map[string]*Tag `json:"m_tag"`
+			Content struct {
+				Title string
+			}
+			Content2 *struct {
+				Detail string
+			}
 		}{}
 
 		ctx.SuccessReturn(respData)
