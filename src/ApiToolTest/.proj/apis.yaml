@@ -1,0 +1,25 @@
+- api_handler_func: HandlerFuncName
+  api_handler_package_func: home
+  source_file: /api/home/api_home.go
+  http_method: POST
+  relative_path: /home/hello_world/:path_id
+  path_data:
+    name: pathData
+    fields:
+    - name: PathId
+      type: string
+  query_data:
+    name: queryData
+    fields:
+    - name: Name
+      type: string
+  post_data:
+    name: postData
+    fields:
+    - name: Address
+      type: string
+  response_data:
+    name: respData
+    fields:
+    - name: Result
+      type: string
